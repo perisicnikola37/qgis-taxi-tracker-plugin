@@ -26,6 +26,8 @@ from qgis.PyQt.QtCore import QSettings, QTranslator, QCoreApplication
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import QAction, QMessageBox
 from qgis.core import QgsProject, Qgis
+from qgis.core import QgsVectorLayer, QgsWkbTypes, QgsFeature
+import datetime
 
 # Initialize Qt resources from file resources.py
 from .resources import *
@@ -157,29 +159,15 @@ class Customplugin:
         return action
 
     def initGui(self):
-        """Create the menu entries and toolbar icons inside the QGIS GUI."""
-
-        icon_path = ":/plugins/Customplugin/icon.png"
+        icon_path_duration = ":/plugins/Customplugin/taxi_icon.png"
         self.add_action(
-            icon_path,
-            text=self.tr("Customplugin"),
-            callback=self.run,
+            icon_path_duration,
+            text=self.tr("MERGE"),
+            callback=self.merge_layers,
             parent=self.iface.mainWindow(),
         )
 
-        icon_path_greeting = (
-            ":/plugins/Customplugin/icon.png"  # Možete koristiti ikonu po želji
-        )
-        self.add_action(
-            icon_path_greeting,
-            text=self.tr("Show Greeting"),
-            callback=self.show_greeting,
-            parent=self.iface.mainWindow(),
-        )
-
-        icon_path_duration = (
-            ":/plugins/Customplugin/icon.png"  # Možete koristiti ikonu po želji
-        )
+        icon_path_duration = ":/plugins/Customplugin/icon.png"
         self.add_action(
             icon_path_duration,
             text=self.tr("Calculate Total Duration"),
@@ -187,16 +175,48 @@ class Customplugin:
             parent=self.iface.mainWindow(),
         )
 
+        icon_path_duration = ":/plugins/Customplugin/icon.png"
+        self.add_action(
+            icon_path_duration,
+            text=self.tr("Calculate Average Distance"),
+            callback=self.calculate_average_distance,
+            parent=self.iface.mainWindow(),
+        )
+
+        icon_path_duration = ":/plugins/Customplugin/icon.png"
+        self.add_action(
+            icon_path_duration,
+            text=self.tr("Calculate Average Duration"),
+            callback=self.calculate_average_duration,
+            parent=self.iface.mainWindow(),
+        )
+
+        icon_path_duration = ":/plugins/Customplugin/icon.png"
+        self.add_action(
+            icon_path_duration,
+            text=self.tr("Calculate Average Speed"),
+            callback=self.calculate_average_speed,
+            parent=self.iface.mainWindow(),
+        )
+
+        icon_path_duration = ":/plugins/Customplugin/icon.png"
+        self.add_action(
+            icon_path_duration,
+            text=self.tr("Calculate Duration Intervals"),
+            callback=self.calculate_duration_intervals,
+            parent=self.iface.mainWindow(),
+        )
+
+        icon_path_duration = ":/plugins/Customplugin/icon.png"
+        self.add_action(
+            icon_path_duration,
+            text=self.tr("Calculate Total Distance"),
+            callback=self.calculate_total_distance,
+            parent=self.iface.mainWindow(),
+        )
+
         # will be set False in run()
         self.first_start = True
-
-    def show_greeting(self):
-        self.iface.messageBar().pushMessage(
-            self.tr("Greetings!"),
-            self.tr("Hello and welcome to QGIS!"),
-            level=Qgis.Info,  # Koristi Qgis.Info za nivo poruke
-            duration=5,
-        )  # Poruka traje 5 sekundi
 
     def calculate_total_duration(self):
         """Funkcija za izračunavanje ukupnog trajanja u minutama iz sloja 'Istorija_ruta'"""
@@ -237,6 +257,247 @@ class Customplugin:
                 QMessageBox.warning(
                     None, "Greška", "Nema podataka za trajanje.", QMessageBox.Ok
                 )
+        except Exception as e:
+            QMessageBox.warning(
+                None, "Greška", f"Došlo je do greške: {str(e)}", QMessageBox.Ok
+            )
+
+    def calculate_average_distance(self):
+        try:
+            target_layer_name = "Istorija_ruta"
+            project = QgsProject.instance()
+            layers = project.mapLayersByName(target_layer_name)
+
+            if not layers:
+                raise Exception(f"Sloj '{target_layer_name}' nije pronađen.")
+
+            target_layer = layers[0]
+
+            distances = []
+
+            for feature in target_layer.getFeatures():
+                if feature["Udaljenost"] is not None:
+                    distances.append(feature["Udaljenost"])
+
+            if distances:
+                average_distance = sum(distances) / len(distances)
+                QMessageBox.information(
+                    None,
+                    "Prosječna kilometraža",
+                    f"Prosječna kilometraža je: {average_distance:.2f} km",
+                    QMessageBox.Ok,
+                )
+            else:
+                QMessageBox.warning(
+                    None,
+                    "Greška",
+                    "Nema vrijednosti za udaljenost u sloju.",
+                    QMessageBox.Ok,
+                )
+        except Exception as e:
+            QMessageBox.warning(
+                None, "Greška", f"Došlo je do greške: {str(e)}", QMessageBox.Ok
+            )
+
+    def calculate_average_duration(self):
+        try:
+            target_layer_name = "Istorija_ruta"
+            project = QgsProject.instance()
+            layers = project.mapLayersByName(target_layer_name)
+
+            if not layers:
+                raise Exception(f"Sloj '{target_layer_name}' nije pronađen.")
+
+            target_layer = layers[0]
+
+            durations = []
+
+            for feature in target_layer.getFeatures():
+                if feature["Trajanje"] is not None:
+                    durations.append(feature["Trajanje"])
+
+            if durations:
+                average_duration = sum(durations) / len(durations)
+                QMessageBox.information(
+                    None,
+                    "Prosječno trajanje vožnji",
+                    f"Prosječno trajanje vožnji je: {average_duration:.2f} minuta",
+                    QMessageBox.Ok,
+                )
+            else:
+                QMessageBox.warning(
+                    None,
+                    "Greška",
+                    "Nema vrednosti za trajanje u sloju.",
+                    QMessageBox.Ok,
+                )
+        except Exception as e:
+            QMessageBox.warning(
+                None, "Greška", f"Došlo je do greške: {str(e)}", QMessageBox.Ok
+            )
+
+    def calculate_average_speed(self):
+        try:
+            target_layer_name = "Istorija_ruta"
+            project = QgsProject.instance()
+            layers = project.mapLayersByName(target_layer_name)
+
+            if not layers:
+                raise Exception(f"Sloj '{target_layer_name}' nije pronađen.")
+
+            target_layer = layers[0]
+
+            speeds = []
+
+            for feature in target_layer.getFeatures():
+                distance = feature["Udaljenost"]
+                duration = feature["Trajanje"]
+                if distance is not None and duration is not None and duration > 0:
+                    speed = distance / (duration / 60)  # Convert duration to hours
+                    speeds.append(speed)
+
+            if speeds:
+                average_speed = sum(speeds) / len(speeds)
+                QMessageBox.information(
+                    None,
+                    "Prosječna brzina",
+                    f"Prosječna brzina je: {average_speed:.2f} km/h",
+                    QMessageBox.Ok,
+                )
+            else:
+                QMessageBox.warning(
+                    None, "Greška", "Nema podataka za brzinu.", QMessageBox.Ok
+                )
+        except Exception as e:
+            QMessageBox.warning(
+                None, "Greška", f"Došlo je do greške: {str(e)}", QMessageBox.Ok
+            )
+
+    def calculate_duration_intervals(self):
+        try:
+            target_layer_name = "Istorija_ruta"
+            project = QgsProject.instance()
+            layers = project.mapLayersByName(target_layer_name)
+
+            if not layers:
+                raise Exception(f"Sloj '{target_layer_name}' nije pronađen.")
+
+            target_layer = layers[0]
+
+            duration_intervals = {0: 0, 30: 0, 60: 0, 120: 0}
+
+            for feature in target_layer.getFeatures():
+                duration = feature["Trajanje"]
+                if duration is not None:
+                    if duration <= 30:
+                        duration_intervals[0] += 1
+                    elif duration <= 60:
+                        duration_intervals[30] += 1
+                    elif duration <= 120:
+                        duration_intervals[60] += 1
+                    else:
+                        duration_intervals[120] += 1
+
+            result = "\n".join(
+                [
+                    f"Interval {key}-{key+30 if key != 120 else '∞'} minuta: {count} ruta"
+                    for key, count in duration_intervals.items()
+                ]
+            )
+            QMessageBox.information(
+                None, "Distribucija trajanja", result, QMessageBox.Ok
+            )
+        except Exception as e:
+            QMessageBox.warning(
+                None, "Greška", f"Došlo je do greške: {str(e)}", QMessageBox.Ok
+            )
+
+    def merge_layers(self):
+        try:
+            target_layer_name = "Istorija_ruta"
+            project = QgsProject.instance()
+            layers = project.mapLayersByName(target_layer_name)
+
+            if not layers:
+                raise Exception(f"Sloj '{target_layer_name}' nije pronađen.")
+
+            target_layer = layers[0]
+
+            layers_to_merge = [
+                layer
+                for layer in project.mapLayers().values()
+                if layer.type() == QgsVectorLayer.VectorLayer
+                and layer.geometryType() == QgsWkbTypes.LineGeometry
+                and layer.name() != target_layer_name
+            ]
+
+            if not layers_to_merge:
+                print("Nema novih slojeva za dodavanje.")
+            else:
+                target_layer.startEditing()
+
+                for layer in layers_to_merge:
+                    print(f"Spajam sloj: {layer.name()}")
+
+                    for feature in layer.getFeatures():
+                        new_feature = QgsFeature(target_layer.fields())
+                        new_feature.setGeometry(feature.geometry())
+
+                        if (
+                            "DIST_KM" in feature.fields().names()
+                            and "Udaljenost" in target_layer.fields().names()
+                        ):
+                            new_feature["Udaljenost"] = feature["DIST_KM"]
+
+                        if (
+                            "DURATION_H" in feature.fields().names()
+                            and "Trajanje" in target_layer.fields().names()
+                        ):
+                            duration_in_hours = feature["DURATION_H"]
+                            duration_in_minutes = duration_in_hours * 60
+                            new_feature["Trajanje"] = duration_in_minutes
+
+                        if "Taksi_ID" in target_layer.fields().names():
+                            new_feature["Taksi_ID"] = (
+                                f"Taksi_{datetime.datetime.now().strftime('%Y%m%d%H%M%S')}"
+                            )
+
+                        target_layer.addFeature(new_feature)
+
+                    QgsProject.instance().removeMapLayer(layer)
+
+                target_layer.commitChanges()
+                print("Svi novi slojevi su spojeni u sloj 'Istorija_Ruta'.")
+        except Exception as e:
+            QMessageBox.warning(
+                None, "Greška", f"Došlo je do greške: {str(e)}", QMessageBox.Ok
+            )
+
+    def calculate_total_distance(self):
+        try:
+            target_layer_name = "Istorija_ruta"
+            project = QgsProject.instance()
+            layers = project.mapLayersByName(target_layer_name)
+
+            if not layers:
+                raise Exception(f"Sloj '{target_layer_name}' nije pronađen.")
+
+            target_layer = layers[0]
+
+            total_distance = sum(
+                [
+                    feature["Udaljenost"]
+                    for feature in target_layer.getFeatures()
+                    if feature["Udaljenost"] is not None
+                ]
+            )
+
+            QMessageBox.information(
+                None,
+                "Ukupna udaljenost",
+                f"Ukupna udaljenost je: {total_distance:.2f} km",
+                QMessageBox.Ok,
+            )
         except Exception as e:
             QMessageBox.warning(
                 None, "Greška", f"Došlo je do greške: {str(e)}", QMessageBox.Ok

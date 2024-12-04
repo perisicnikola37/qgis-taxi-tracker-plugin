@@ -3,11 +3,11 @@
 # This file should be included when you package your plugin.# Mandatory items:
 
 [general]
-name=Customplugin
+name=Taxi tracker
 qgisMinimumVersion=3.0
-description=Customplugin
+description=Taxi tracker
 version=1.0
-author=Nikola Perišić
+author=Nikola
 email=
 
 about=Provide a brief description of the plugin and its purpose.

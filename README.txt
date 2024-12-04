@@ -1,5 +1,11 @@
 Plugin Builder Results
 
+Your plugin Customplugin was created in:
+    C:/Users/5dzon/Desktop/eto\customplugin
+
+Your QGIS plugin directory is located at:
+    C:/Users/5dzon/AppData/Roaming/QGIS/QGIS3/profiles/default/python/plugins
+
 What's Next:
 
   * Copy the entire directory containing your new plugin to the QGIS plugin
