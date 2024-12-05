@@ -10,7 +10,15 @@
 This QGIS plugin enables route data analysis from a layer in QGIS using various metrics such as total distance, duration, average speed, and duration intervals. The plugin loads its configuration from a JSON file (`config.json`), allowing dynamic adjustment of the layer name without the need to modify the code.
 
 ### Requirements
-- ORSTools
+- <a href="https://plugins.qgis.org/plugins/ORStools/" target="_blank">ORS tools</a> - The ORS tools plugin for QGIS is essential for integrating with the OpenRouteService API. It enables advanced routing, distance analysis, and other geospatial operations.
+
+API Key Configuration
+
+Once installed, the ORS tools plugin requires an API key to function:
+
+1. Obtain an API key from OpenRouteService.
+2. In QGIS, navigate to `Plugins` > `ORS Tools` > `Settings`.
+3. Enter your API key in the provided field and save.
 
 ### Installation
 
