@@ -14,10 +14,7 @@
 """
 from qgis.PyQt.QtCore import QSettings, QTranslator, QCoreApplication
 from qgis.PyQt.QtGui import QIcon
-from qgis.PyQt.QtWidgets import QAction, QMessageBox
-from qgis.core import QgsProject, Qgis
-from qgis.core import QgsVectorLayer, QgsWkbTypes, QgsFeature
-import datetime
+from qgis.PyQt.QtWidgets import QAction
 
 # utils
 from utils import merge_layers

@@ -9,6 +9,9 @@
 
 This QGIS plugin enables route data analysis from a layer in QGIS using various metrics such as total distance, duration, average speed, and duration intervals. The plugin loads its configuration from a JSON file (`config.json`), allowing dynamic adjustment of the layer name without the need to modify the code.
 
+### Requirements
+- ORSTools
+
 ### Installation
 
 Download the plugin from the repository. Zip this folder. Attach it as .zip file in QGIS plugin manager.
