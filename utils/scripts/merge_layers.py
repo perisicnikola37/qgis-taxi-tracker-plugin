@@ -8,8 +8,9 @@ def merge_layers(target_layer_name="Istorija_ruta"):
         project = QgsProject.instance()
         layers = project.mapLayersByName(target_layer_name)
 
+        # add logic for automatically creating a new layer if it doesn't exist
         if not layers:
-            raise Exception(f"Sloj '{target_layer_name}' nije pronađen.")
+            raise Exception(f"Layer '{target_layer_name}' is not found.")
 
         target_layer = layers[0]
         layers_to_merge = [
@@ -21,12 +22,12 @@ def merge_layers(target_layer_name="Istorija_ruta"):
         ]
 
         if not layers_to_merge:
-            print("Nema novih slojeva za dodavanje.")
+            print("Not enough layers to merge.")
         else:
             target_layer.startEditing()
 
             for layer in layers_to_merge:
-                print(f"Spajam sloj: {layer.name()}")
+                print(f"Merging layer: {layer.name()}")
 
                 for feature in layer.getFeatures():
                     new_feature = QgsFeature(target_layer.fields())
@@ -56,8 +57,6 @@ def merge_layers(target_layer_name="Istorija_ruta"):
                 QgsProject.instance().removeMapLayer(layer)
 
             target_layer.commitChanges()
-            print("Svi novi slojevi su spojeni u sloj 'Istorija_Ruta'.")
+            print("All new layers are merged into layer 'Istorija_Ruta'.")
     except Exception as e:
-        QMessageBox.warning(
-            None, "Greška", f"Došlo je do greške: {str(e)}", QMessageBox.Ok
-        )
+        QMessageBox.warning(None, "Error", f"Error occured.: {str(e)}", QMessageBox.Ok)

@@ -1,3 +1,4 @@
+from exceptions import LayerNotFoundException
 from qgis.core import QgsProject
 from PyQt5.QtWidgets import QMessageBox
 from config_loader import LAYER_NAME
@@ -11,7 +12,7 @@ def calculate_average_distance():
         layers = project.mapLayersByName(target_layer_name)
 
         if not layers:
-            raise Exception(f"Sloj '{target_layer_name}' nije pronađen.")
+            raise LayerNotFoundException()
 
         target_layer = layers[0]
         distances = []
@@ -24,18 +25,16 @@ def calculate_average_distance():
             average_distance = sum(distances) / len(distances)
             QMessageBox.information(
                 None,
-                "Prosječna kilometraža",
-                f"Prosječna kilometraža je: {average_distance:.2f} km",
+                "Average distance",
+                f"Average distance is: {average_distance:.2f} km",
                 QMessageBox.Ok,
             )
         else:
             QMessageBox.warning(
                 None,
-                "Greška",
-                "Nema vrijednosti za udaljenost u sloju.",
+                "Error",
+                "Missing data for distance in layer.",
                 QMessageBox.Ok,
             )
     except Exception as e:
-        QMessageBox.warning(
-            None, "Greška", f"Došlo je do greške: {str(e)}", QMessageBox.Ok
-        )
+        QMessageBox.warning(None, "Error", f"Error occured: {str(e)}", QMessageBox.Ok)

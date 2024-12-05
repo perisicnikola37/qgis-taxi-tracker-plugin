@@ -7,7 +7,7 @@ def load_config(config_file="config.json"):
             config = json.load(f)
         return config
     except Exception as e:
-        raise Exception(f"Greška prilikom učitavanja konfiguracije: {str(e)}")
+        raise Exception(f"Error during configuration initialization: {str(e)}")
 
 
 config = load_config()

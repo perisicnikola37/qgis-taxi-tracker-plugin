@@ -1,3 +1,4 @@
+from exceptions import LayerNotFoundException
 from qgis.core import QgsProject
 from PyQt5.QtWidgets import QMessageBox
 from config_loader import LAYER_NAME
@@ -11,7 +12,7 @@ def calculate_total_duration():
         layers = project.mapLayersByName(target_layer_name)
 
         if not layers:
-            raise Exception(f"Sloj '{target_layer_name}' nije pronađen.")
+            raise LayerNotFoundException()
 
         target_layer = layers[0]
         durations = []
@@ -25,15 +26,13 @@ def calculate_total_duration():
             total_duration_hours = total_duration_minutes / 60
             QMessageBox.information(
                 None,
-                "Ukupno trajanje",
-                f"Ukupno trajanje je: {total_duration_hours:.2f} sati",
+                "Total drive duration",
+                f"Total drive duration is: {total_duration_hours:.2f} hours",
                 QMessageBox.Ok,
             )
         else:
             QMessageBox.warning(
-                None, "Greška", "Nema podataka za trajanje.", QMessageBox.Ok
+                None, "Error", "Don't have enough data.", QMessageBox.Ok
             )
     except Exception as e:
-        QMessageBox.warning(
-            None, "Greška", f"Došlo je do greške: {str(e)}", QMessageBox.Ok
-        )
+        QMessageBox.warning(None, "Error", f"Error occured.: {str(e)}", QMessageBox.Ok)

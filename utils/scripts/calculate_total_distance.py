@@ -1,3 +1,4 @@
+from exceptions import LayerNotFoundException
 from qgis.core import QgsProject
 from PyQt5.QtWidgets import QMessageBox
 from config_loader import LAYER_NAME
@@ -11,7 +12,7 @@ def calculate_total_distance():
         layers = project.mapLayersByName(target_layer_name)
 
         if not layers:
-            raise Exception(f"Sloj '{target_layer_name}' nije pronađen.")
+            raise LayerNotFoundException()
 
         target_layer = layers[0]
 
@@ -25,12 +26,10 @@ def calculate_total_distance():
 
         QMessageBox.information(
             None,
-            "Ukupna udaljenost",
-            f"Ukupna udaljenost je: {total_distance:.2f} km",
+            "Total drive distance",
+            f"Total drive distance is: {total_distance:.2f} km",
             QMessageBox.Ok,
         )
 
     except Exception as e:
-        QMessageBox.warning(
-            None, "Greška", f"Došlo je do greške: {str(e)}", QMessageBox.Ok
-        )
+        QMessageBox.warning(None, "Error", f"Error occured: {str(e)}", QMessageBox.Ok)

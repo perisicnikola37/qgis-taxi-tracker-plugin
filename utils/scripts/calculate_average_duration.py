@@ -1,3 +1,4 @@
+from exceptions import LayerNotFoundException
 from qgis.core import QgsProject
 from PyQt5.QtWidgets import QMessageBox
 from config_loader import LAYER_NAME
@@ -11,7 +12,7 @@ def calculate_average_duration():
         layers = project.mapLayersByName(target_layer_name)
 
         if not layers:
-            raise Exception(f"Sloj '{target_layer_name}' nije pronađen.")
+            raise LayerNotFoundException()
 
         target_layer = layers[0]
         durations = []
@@ -24,15 +25,13 @@ def calculate_average_duration():
             average_duration = sum(durations) / len(durations)
             QMessageBox.information(
                 None,
-                "Prosječno trajanje vožnji",
-                f"Prosječno trajanje vožnji je: {average_duration:.2f} minuta",
+                "Average drive duration",
+                f"Average drive duration is: {average_duration:.2f} minutes",
                 QMessageBox.Ok,
             )
         else:
             QMessageBox.warning(
-                None, "Greška", "Nema vrednosti za trajanje u sloju.", QMessageBox.Ok
+                None, "Error", "There are no values in the layer.", QMessageBox.Ok
             )
     except Exception as e:
-        QMessageBox.warning(
-            None, "Greška", f"Došlo je do greške: {str(e)}", QMessageBox.Ok
-        )
+        QMessageBox.warning(None, "Error", f"Error occured: {str(e)}", QMessageBox.Ok)

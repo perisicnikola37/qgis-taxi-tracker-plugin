@@ -1,3 +1,4 @@
+from exceptions import LayerNotFoundException
 from qgis.core import QgsProject
 from PyQt5.QtWidgets import QMessageBox
 from config_loader import LAYER_NAME
@@ -11,7 +12,7 @@ def calculate_average_speed():
         layers = project.mapLayersByName(target_layer_name)
 
         if not layers:
-            raise Exception(f"Sloj '{target_layer_name}' nije pronađen.")
+            raise LayerNotFoundException()
 
         target_layer = layers[0]
         speeds = []
@@ -27,15 +28,11 @@ def calculate_average_speed():
             average_speed = sum(speeds) / len(speeds)
             QMessageBox.information(
                 None,
-                "Prosječna brzina",
-                f"Prosječna brzina je: {average_speed:.2f} km/h",
+                "Average speed",
+                f"Average speed is: {average_speed:.2f} km/h",
                 QMessageBox.Ok,
             )
         else:
-            QMessageBox.warning(
-                None, "Greška", "Nema podataka za brzinu.", QMessageBox.Ok
-            )
+            QMessageBox.warning(None, "Error", "No data for speed.", QMessageBox.Ok)
     except Exception as e:
-        QMessageBox.warning(
-            None, "Greška", f"Došlo je do greške: {str(e)}", QMessageBox.Ok
-        )
+        QMessageBox.warning(None, "Error", f"Error occured: {str(e)}", QMessageBox.Ok)
