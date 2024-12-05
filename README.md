@@ -2,7 +2,7 @@
 
 <div style="display: flex; align-items: center;">
     <img src="https://github.com/user-attachments/assets/1228884f-1d2b-4797-b322-9804bc617508" alt="image1" style="height: 200px; margin-right: 10px;">
-    <img src="https://github.com/user-attachments/assets/023b5b3e-d21d-420b-b9d9-e623d842a053" alt="image2" style="height: 200px;">
+    <img src="https://i.postimg.cc/13k8sQj0/Dizajn-bez-naslova.jpg" alt="image2" style="height: 200px;">
 </div>
 
 ### Overview
